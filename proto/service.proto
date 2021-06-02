@@ -1,0 +1,42 @@
+syntax = "proto3";
+package service;
+
+option go_package = "proto";
+
+import "models.proto";
+
+// EthProxyService is
+service EthProxyService {
+    // Block is Grpc method to fetch Block
+    // by given getter params
+    rpc Block(BlockGetter) returns (models.Block);
+
+    // Tx is Grpc method to fetch Tx
+    // by given getter params
+    rpc Tx(TxGetter) returns (models.Tx);
+}
+
+// BlockGetter is getter to fetch block
+// by number or latest block
+message BlockGetter {
+    oneof getter {
+        int64   number  = 1;
+        bool    latest  = 2;
+    }
+}
+
+// TxGetter is getter to fetch Tx by
+// hash and block getter
+message TxGetter {
+    oneof getter {
+        bytes           hash    = 1;
+        TxGetterIndex   index   = 2;
+    }
+}
+
+// TxGetterIndex is message that use
+// to get tx by index and block number
+message TxGetterIndex {
+    int64       index   = 1;
+    BlockGetter block   = 2;
+}

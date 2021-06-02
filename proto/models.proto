@@ -1,0 +1,25 @@
+syntax = "proto3";
+package models;
+
+option go_package = "proto";
+
+// Block is proto message that represent Ethereum Chain Block
+// structure with most important data fields
+message Block {
+    int64   number      = 1;
+    bytes   hash        = 2;
+    bytes   parent      = 3;
+    int64   timestamp   = 4;
+    int64   txCount     = 5;
+}
+
+// Tx is proto message that represent Ethereum Transaction
+// model structure with most important data fields
+message Tx {
+    bytes   hash        = 1;
+    bytes   from        = 2;
+    bytes   to          = 3;
+    int64   value       = 4;
+    int64   gas         = 5;
+    int64   gasPrice    = 6;
+}
