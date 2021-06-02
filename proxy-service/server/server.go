@@ -7,7 +7,6 @@ import (
 
 	middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	mwLogging "github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
-	mwRecovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/keepalive"
 
@@ -85,7 +84,7 @@ func (s *Server) initServer(timeout string) error {
 
 	middlewares := middleware.ChainUnaryServer(
 		mwLogging.UnaryServerInterceptor(logger.Log().WithField("layer", "GRPC server")),
-		mwRecovery.UnaryServerInterceptor(),
+		// mwRecovery.UnaryServerInterceptor(),
 	)
 
 	var kaep = keepalive.EnforcementPolicy{

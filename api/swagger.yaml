@@ -1,0 +1,165 @@
+swagger: "2.0"
+info:
+  title: Eth-proxy
+  description: Eth-proxy Rest API
+  version: 0.0.1
+
+basePath: /api/v1
+consumes:
+  - application/json
+produces:
+  - application/json
+schemes:
+  - http
+
+paths:
+  /block/{number}:
+    parameters:
+      - $ref: '#/parameters/number'
+    get:
+      tags:
+        - blocks
+      operationId: getBlock
+      description: get block by number or get latest block
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/block'
+        default:
+          $ref: '#/responses/errorResponse'
+  /block/{number}/txs/{index}:
+    parameters:
+      - $ref: '#/parameters/number'
+      - description: transaction index in block
+        in: path
+        name: index
+        required: true
+        type: integer
+    get:
+      tags:
+        - blocks
+        - txs
+      operationId: getTxByIndex
+      description: get Transaction by block number and tx index
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/tx'
+        default:
+          $ref: '#/responses/errorResponse'
+  /txs/{hash}:
+    parameters:
+      - description: transaction hash
+        in: path
+        name: hash
+        required: true
+        type: string
+    get:
+      tags:
+        - txs
+      operationId: getTxByHash
+      description: get Transaction by hash
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/tx'
+        default:
+          $ref: '#/responses/errorResponse'
+parameters:
+  number:
+    description: block getter by number
+    in: path
+    name: number
+    required: true
+    type: string
+    default: latest
+
+
+responses:
+  errorResponse:
+    description: Error
+    schema:
+      $ref: '#/definitions/error'
+
+definitions:
+  block:
+    description: Ethereum Block model
+    type: object
+    properties:
+      number:
+        description: block number
+        type: integer
+        example: 321342
+      hash:
+        description: block hash in hex format
+        type: string
+        example: 0x199d17a9a33ac42e3b802083806ccecf2247a9cedba1a2527dd9c334509bb6ea
+      parent:
+        description: hash of parent block
+        type: string
+        example: 0x199d17a9a33ac42e3b802083806ccecf2247a9cedba1a2527dd9c334509bb6ea
+      timestamp:
+        description: block time
+        type: integer
+        example: 1622660145
+      tx_count:
+        description: block transactions count
+        type: integer
+        example: 32
+    required:
+      - number
+      - hash
+      - timestamp
+      - tx_count
+  tx:
+    description: Ethereum Transaction model
+    type: object
+    properties:
+      hash:
+        description: transaction hash in hex format
+        type: string
+        example: 0x199d17a9a33ac42e3b802083806ccecf2247a9cedba1a2527dd9c334509bb6ea
+      from:
+        description: Eth address of transaction sender
+        type: string
+        example: 0xbF0889b98D187dABC28362e3ff6AA9C184C7d299
+      to:
+        description: ETH address of transactionreciever
+        type: string
+        example: 0xbF0889b98D187dABC28362e3ff6AA9C184C7d299
+      value:
+        description: transaction value in wei
+        type: integer
+        example: 321412433
+      gas:
+        description: gas used by transaction
+        type: integer
+        example: 321421
+      gas_price:
+        description: gas price
+        type: integer
+        example: 32132
+  error:
+    description: the error model uses for all error responses
+    type: object
+    properties:
+      code:
+        description: error code
+        type: integer
+        format: int64
+        example: 500
+      message:
+        description: error message
+        type: string
+        example: internal server error
+      payload:
+        description: paload definition depended on specific request
+        type: object
+        additionalProperties:
+          type: string
+    required:
+      - message
+      - code

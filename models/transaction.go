@@ -12,7 +12,7 @@ import (
 type Tx struct {
 	Hash     common.Hash
 	From     common.Address
-	To       common.Address
+	To       *common.Address
 	Value    int64
 	Gas      uint64
 	GasPrice int64
@@ -37,12 +37,31 @@ func (t Tx) Proto() *proto.Tx {
 	}
 }
 
+// TxFromProto creates Tx model
+// structure from protobuf message
+func TxFromProto(pb *proto.Tx) *Tx {
+	tx := &Tx{
+		Hash:     common.BytesToHash(pb.Hash),
+		From:     common.BytesToAddress(pb.From),
+		Value:    pb.Value,
+		Gas:      uint64(pb.Gas),
+		GasPrice: pb.GasPrice,
+	}
+
+	if pb.To != nil {
+		to := common.BytesToAddress(pb.To)
+		tx.To = &to
+	}
+
+	return tx
+}
+
 // TxFromGeth creates Tx model
 // structure from geth package Transaction
 func TxFromGeth(gethTx *types.Transaction) *Tx {
 	return &Tx{
 		Hash:     gethTx.Hash(),
-		To:       *gethTx.To(),
+		To:       gethTx.To(),
 		Value:    gethTx.Value().Int64(),
 		Gas:      gethTx.Gas(),
 		GasPrice: gethTx.GasPrice().Int64(),

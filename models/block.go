@@ -31,6 +31,18 @@ func (b Block) Proto() *proto.Block {
 	}
 }
 
+// BlockFromProto create Block model
+// from protobuf message
+func BlockFromProto(pb *proto.Block) *Block {
+	return &Block{
+		Number:  uint64(pb.Number),
+		Hash:    common.BytesToHash(pb.Hash),
+		Parent:  common.BytesToHash(pb.Parent),
+		Time:    time.Unix(pb.Timestamp, 0),
+		TxCount: int(pb.TxCount),
+	}
+}
+
 // BlockFromGeth creates Block model
 // structure from geth package Block
 func BlockFromGeth(gethBlock *types.Block) *Block {
