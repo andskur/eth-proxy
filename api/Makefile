@@ -58,7 +58,7 @@ LDFLAGS += -X $(GITVER_PKG).BuildDate=$(BUILD_DATE)
 
 all: clean build
 
-run: tidy
+run:
 	go run -race $(APP_ENTRY_POINT) serve
 
 build: generate-api
@@ -69,17 +69,6 @@ generate-api:
 
 clean:
 	rm -f $(APP)
-
-tidy:
-	go mod tidy
-
-update:
-	go get -u ./...
-
-vendor:
-	rm -rf vendor && go mod tidy && go mod vendor
-
-update_vendor: update vendor
 
 image: GOOS =linux
 image: GOARCH =amd64

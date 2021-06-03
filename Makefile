@@ -1,8 +1,5 @@
 COMMON_PATH	?= $(shell pwd)
 
-clean:
-	rm -f $(APP)
-
 tidy:
 	go mod tidy
 

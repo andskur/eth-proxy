@@ -58,20 +58,11 @@ LDFLAGS += -X $(GITVER_PKG).BuildDate=$(BUILD_DATE)
 
 all: clean build
 
-run: tidy
-	go run -race $(APP_ENTRY_POINT) serve
-
 build:
 	env CGO_ENABLED=0 GOOS=$(GOOS) GOARCH=$(GOARCH) go build -ldflags="-w -s ${LDFLAGS}" -o $(BUILD_OUT_DIR)/$(APP) $(APP_ENTRY_POINT)
 
 clean:
 	rm -f $(APP)
-
-tidy:
-	go mod tidy
-
-update:
-	go get -u ./...
 
 image: GOOS =linux
 image: GOARCH =amd64
