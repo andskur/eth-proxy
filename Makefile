@@ -19,7 +19,7 @@ protoc:
 	protoc -I $(COMMON_PATH)/proto $(COMMON_PATH)/proto/*.proto  --go_out=plugins=grpc:$(COMMON_PATH)/proto
 
 run_service:
-	go run proxy-service/cmd/eth-proxy.go serve
+	go run proxy-service/cmd/proxy-service.go serve
 
 run_api:
 	API_HOST=127.0.0.1 go run api/cmd/api.go serve

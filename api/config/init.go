@@ -10,7 +10,7 @@ func init() {
 	viper.SetDefault("log.level", "info")
 
 	// grpc admin
-	viper.SetDefault("api.host", "api")
+	viper.SetDefault("api.host", "proxy-service")
 	viper.SetDefault("api.port", 9090)
 	viper.SetDefault("api.timeout", "60s")
 

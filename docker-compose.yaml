@@ -1,0 +1,29 @@
+version: '3.7'
+
+services:
+  proxy-service:
+    build:
+      context: ./
+      dockerfile: proxy-service/Dockerfile
+    container_name: eth-proxy-service
+    restart: on-failure
+    networks:
+      - eth-proxy
+    command: serve
+  api:
+    build:
+      context: ./
+      dockerfile: api/Dockerfile
+    container_name: eth-proxy-api
+    restart: on-failure
+    ports:
+      - 8888:8888
+    depends_on:
+      - proxy-service
+    networks:
+      - eth-proxy
+    command: serve
+
+networks:
+  eth-proxy:
+    driver: bridge
