@@ -84,8 +84,8 @@ func (s *Server) initServer(timeout string) error {
 
 	middlewares := middleware.ChainUnaryServer(
 		mwLogging.UnaryServerInterceptor(logger.Log().WithField("layer", "GRPC server")),
-		// mwRecovery.UnaryServerInterceptor(),
-	)
+		mwRecovery.UnaryServerInterceptor(),
+	
 
 	var kaep = keepalive.EnforcementPolicy{
 		MinTime:             5 * time.Second, // If a client pings more than once every 5 seconds, terminate the connection
