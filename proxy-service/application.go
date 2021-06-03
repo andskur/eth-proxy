@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 
 	"github.com/ethereum/go-ethereum/ethclient"
@@ -57,6 +58,10 @@ func (app *App) Init() error {
 
 // initEthereum initialise Application Ethereum client
 func (app *App) initEthereum(cfg *config.Ethereum) (err error) {
+	if strings.Contains(cfg.Addr, "wss") {
+		cfg.Wss = true
+	}
+
 	app.ethClient, err = ethclient.Dial(cfg.Addr)
 	if err != nil {
 		return fmt.Errorf("connecting to Ethereum node at %s: %w", cfg.Addr, err)
@@ -68,9 +73,9 @@ func (app *App) initEthereum(cfg *config.Ethereum) (err error) {
 
 // initService initialize Application service layer instance
 func (app *App) initService() (err error) {
-	app.srv, err = service.NewService(app.ethClient)
+	app.srv, err = service.NewService(app.ethClient, app.config.Ethereum.Wss)
 	if err != nil {
-		return fmt.Errorf("create new service instance %w", err)
+		return fmt.Errorf("create new service instance: %w", err)
 	}
 
 	logger.Log().Info("service layer successfully initialised")
@@ -92,6 +97,10 @@ func (app *App) initGrpc(cfg *config.Grpc) (err error) {
 
 // Serve start the application
 func (app *App) Serve() error {
+	if app.config.Ethereum.Wss {
+		go app.srv.ListenNewBlocks()
+	}
+
 	go app.grpc.Listen()
 
 	// Gracefully shutdown the server
@@ -106,9 +115,12 @@ func (app *App) Serve() error {
 	return nil
 }
 
-// Stop the application
+// Stop shutdown the application
 func (app *App) Stop() {
 	app.grpc.Close()
+	if app.config.Ethereum.Wss {
+		app.srv.StopListenNewBlocks()
+	}
 	app.ethClient.Close()
 }
 

@@ -11,6 +11,7 @@ func init() {
 
 	// ethereum
 	viper.SetDefault("ethereum.addr", "https://cloudflare-eth.com")
+	viper.SetDefault("ethereum.wss", false)
 
 	// grpc admin
 	viper.SetDefault("grpc.host", "0.0.0.0")

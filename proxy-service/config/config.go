@@ -20,6 +20,7 @@ type Log struct {
 // node connection params
 type Ethereum struct {
 	Addr string
+	Wss  bool
 }
 
 // Grpc represent Grpc server params
