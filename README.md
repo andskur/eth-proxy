@@ -13,7 +13,6 @@ Project based on 2 microservices:
 
 - [Quick start](#quick-start)
 - [Code structure](#Code-structure)
-- [Requirements](#Requirements)
 - [Make commands](#Make-commands)
 - [CLI](#CLI)
 - [Dependencies](#Dependencies)
