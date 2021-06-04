@@ -3,9 +3,10 @@ package config
 // Scheme represent top-level
 // microservice Application config scheme
 type Scheme struct {
-	Log      *Log
-	Grpc     *Grpc
-	Ethereum *Ethereum
+	Log       *Log
+	Grpc      *Grpc
+	Ethereum  *Ethereum
+	Cachesize int
 }
 
 // Log represent Application logger params

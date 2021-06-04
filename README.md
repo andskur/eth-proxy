@@ -1,6 +1,6 @@
 # ETH-proxy
 ETH-proxy is a complex solution to make proxi-based Ethereum block explorer 
-with built-in cache mechanic.
+with built-in LRU cache.
 
 Project based on 2 microservices:
 * Proxy-service with Grpc API to cooperate with other microservices
@@ -93,7 +93,10 @@ You can simply run this application by using docker compose.
 |   |   └---config.go - config scheme
 |   |   └---init.go - default config initialisation
 |   |
-|   └---repository - repository pattern interface and implementations that controls cache storage
+|   └---repository - cache storage
+|   |   └---cache_blocks.go - blocks caching
+|   |   └---cache_txs.go - transactions caching
+|   |   └---repository.go - repository pattern interface and its implementations
 |   |
 |   └---server - Grpc server
 |   |   └---handlers.go - Grpc handlers
@@ -192,6 +195,9 @@ that allow uses different configuration formats for one scheme (env vars prefera
     * **level** - logging level, can be **info**, **warning**, **error**, **debug**
     * *default* - info
     * *env setup* - LOG_LEVEL=
+* **Cachesize** - Blocks and transactions cache size
+    * *default* - 100
+    * *env setup* - CACHESIZE=
 * **Api** - proxy-service Grpc api connection params
     * **host** - host to service
         * *default* - profile-service

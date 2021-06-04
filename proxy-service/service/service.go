@@ -51,7 +51,7 @@ type Service struct {
 
 // NewService create new Service instance
 // with given ethereum client
-func NewService(ethClient *ethclient.Client, wss bool) (IService, error) {
+func NewService(ethClient *ethclient.Client, wss bool, repository repository.IRepository) (IService, error) {
 	chainID, err := ethClient.NetworkID(context.Background())
 	if err != nil {
 		return nil, fmt.Errorf("fetch Ethereum chain id: %w", err)
@@ -60,7 +60,7 @@ func NewService(ethClient *ethclient.Client, wss bool) (IService, error) {
 	srv := &Service{
 		ethClient: ethClient,
 		chainID:   chainID,
-		cache:     repository.NewInMemory(),
+		cache:     repository,
 	}
 
 	if wss {
@@ -91,7 +91,6 @@ func (s *Service) Block(number *int) (*models.Block, error) {
 
 	cachedBlock := s.retrieveBlockFromHash(num)
 	if cachedBlock != nil {
-		logger.Log().Infof("Block %d retrived from cache", cachedBlock.Number)
 		return cachedBlock, nil
 	}
 
@@ -104,7 +103,6 @@ func (s *Service) Block(number *int) (*models.Block, error) {
 
 	if cachedBlock == nil {
 		s.cache.StoreBlock(formattedBlock)
-		logger.Log().Infof("Block %d stored to cache", formattedBlock.Number)
 	}
 
 	return formattedBlock, nil
@@ -177,7 +175,7 @@ func (s *Service) ListenNewBlocks() {
 			}
 
 			s.cache.StoreLastBlock(models.BlockFromGeth(block))
-			logger.Log().Infof("Block %d stored to cache", block.Number())
+			logger.Log().Infof("block %d stored to cache", block.Number())
 		}
 	}
 }

@@ -17,4 +17,7 @@ func init() {
 	viper.SetDefault("grpc.host", "0.0.0.0")
 	viper.SetDefault("grpc.port", 9090)
 	viper.SetDefault("grpc.timeout", "120s")
+
+	// cache
+	viper.SetDefault("cachesize", 100)
 }

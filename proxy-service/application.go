@@ -7,6 +7,7 @@ import (
 	"strings"
 	"syscall"
 
+	"eth-proxy/proxy-service/repository"
 	"github.com/ethereum/go-ethereum/ethclient"
 
 	"eth-proxy/pkg/logger"
@@ -45,7 +46,7 @@ func (app *App) Init() error {
 		return fmt.Errorf("application Ethereum client initialisation: %w", err)
 	}
 
-	if err := app.initService(); err != nil {
+	if err := app.initService(app.config.Cachesize); err != nil {
 		return fmt.Errorf("service layer initialising: %w", err)
 	}
 
@@ -72,8 +73,8 @@ func (app *App) initEthereum(cfg *config.Ethereum) (err error) {
 }
 
 // initService initialize Application service layer instance
-func (app *App) initService() (err error) {
-	app.srv, err = service.NewService(app.ethClient, app.config.Ethereum.Wss)
+func (app *App) initService(cacheSize int) (err error) {
+	app.srv, err = service.NewService(app.ethClient, app.config.Ethereum.Wss, repository.NewInMemory(cacheSize))
 	if err != nil {
 		return fmt.Errorf("create new service instance: %w", err)
 	}
